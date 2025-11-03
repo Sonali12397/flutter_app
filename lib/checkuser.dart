@@ -1,6 +1,8 @@
 import 'package:abc_app/loginpage.dart';
 import 'package:abc_app/screens/patient/patient_homepage.dart';
 import 'package:abc_app/screens/pharmacy/pharmacy_homepage.dart';
+import 'package:abc_app/widgets/bottom_navbar.dart';
+import 'package:abc_app/widgets/pharmacy_bottom_navbar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -51,10 +53,9 @@ class _CheckuserState extends State<Checkuser> {
         if (snapshot.hasData) {
           String? role = snapshot.data;
           if (role == 'pharmacy') {
-            return const PharmacyHomePage();
+            return const PharmacyBottomNavbar();
           } else {
-            // Default to patient home page if role is 'patient' or anything else
-            return const PatientHomePage();
+            return const BottomNavbar();
           }
         }
 
