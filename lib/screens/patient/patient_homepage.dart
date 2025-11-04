@@ -1,4 +1,5 @@
 import 'package:abc_app/screens/patient/medicine_detail_page.dart'; // <-- IMPORT THE DETAIL PAGE
+import 'package:abc_app/screens/patient/notifications_page.dart'; // <-- IMPORT NOTIFICATIONS
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:abc_app/models/user_model.dart'; // Import your model
@@ -29,9 +30,7 @@ class PatientHomePage extends StatelessWidget {
                     snapshot.data!.data() as Map<String, dynamic>);
               }
 
-              //
-              // vvvv THIS IS THE FIX for the AppBar vvvv
-              //
+              // Fix for the AppBar image
               bool hasImage = (user != null && user.profileImageUrl.isNotEmpty);
 
               return SliverAppBar(
@@ -42,7 +41,6 @@ class PatientHomePage extends StatelessWidget {
                   padding: const EdgeInsets.all(8.0),
                   child: CircleAvatar(
                     backgroundColor: Colors.grey[200],
-                    // Use NetworkImage if it exists, otherwise show Icon
                     backgroundImage:
                     hasImage ? NetworkImage(user!.profileImageUrl) : null,
                     child: !hasImage
@@ -50,9 +48,6 @@ class PatientHomePage extends StatelessWidget {
                         : null,
                   ),
                 ),
-                //
-                // ^^^^ THIS IS THE FIX for the AppBar ^^^^
-                //
                 title: Text(
                   user?.location ?? "Set your location",
                   style: const TextStyle(
@@ -68,7 +63,13 @@ class PatientHomePage extends StatelessWidget {
                   IconButton(
                     icon: const Icon(Icons.notifications_outlined,
                         color: Colors.grey),
-                    onPressed: () {},
+                    onPressed: () {
+                      // Navigate to Notifications Page
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const NotificationsPage()),
+                      );
+                    },
                   ),
                 ],
               );
@@ -79,13 +80,13 @@ class PatientHomePage extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Material(
-              color: Colors.transparent, // Make the Material invisible
+              color: Colors.transparent,
               child: TextField(
                 decoration: InputDecoration(
                   hintText: 'Search Medicines',
                   prefixIcon: const Icon(Icons.search),
                   filled: true,
-                  fillColor: Colors.grey[100], // This color will now draw correctly
+                  fillColor: Colors.grey[100],
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12.0),
                     borderSide: BorderSide.none,
@@ -103,7 +104,7 @@ class PatientHomePage extends StatelessWidget {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(12.0),
               child: Image.asset(
-                'assets/images/banner1.png', // Add your banner to assets
+                'assets/images/banner1.png', // Make sure this asset exists
                 height: 180,
                 fit: BoxFit.cover,
               ),
@@ -125,7 +126,7 @@ class PatientHomePage extends StatelessWidget {
         // 5. Quick Access Horizontal List
         SliverToBoxAdapter(
           child: SizedBox(
-            height: 200, // Define a fixed height for the horizontal list
+            height: 200,
             child: StreamBuilder<QuerySnapshot>(
               stream: FirebaseFirestore.instance
                   .collection('medicines')
@@ -162,7 +163,7 @@ class PatientHomePage extends StatelessWidget {
           ),
         ),
 
-        // 6. "All Medicines" Title (or other sections)
+        // 6. "All Medicines" Title
         SliverToBoxAdapter(
           child: Padding(
             padding: const EdgeInsets.fromLTRB(16.0, 24.0, 16.0, 8.0),
@@ -193,10 +194,10 @@ class PatientHomePage extends StatelessWidget {
               padding: const EdgeInsets.all(12.0),
               sliver: SliverGrid(
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2, // 2 items per row
+                  crossAxisCount: 2,
                   mainAxisSpacing: 12.0,
                   crossAxisSpacing: 12.0,
-                  childAspectRatio: 0.75, // Adjust item height/width ratio
+                  childAspectRatio: 0.75,
                 ),
                 delegate: SliverChildBuilderDelegate(
                       (context, index) {
@@ -222,11 +223,11 @@ class PatientHomePage extends StatelessWidget {
   }
 
   //
-  // vvvv THIS IS THE "UTIL" / HELPER WIDGET vvvv
+  // vvvv THIS IS THE UPDATED "UTIL" WIDGET vvvv
   //
   // Reusable widget for the medicine cards
   Widget _buildMedicineCard(
-      BuildContext context, String name, String category, String imageUrl, String medicineId) {
+      BuildContext context, String name, String category, String imageUrl, String medicineId) { // <-- Added medicineId
 
     bool hasImage = imageUrl.isNotEmpty;
 
@@ -256,7 +257,7 @@ class PatientHomePage extends StatelessWidget {
                 child: Center(
                   child: hasImage
                       ? Image.network(
-                    imageUrl, // Load image from the URL in Firestore
+                    imageUrl,
                     fit: BoxFit.contain,
                     loadingBuilder: (context, child, loadingProgress) {
                       if (loadingProgress == null) return child;
