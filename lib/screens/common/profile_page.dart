@@ -1,3 +1,4 @@
+import 'package:abc_app/forgetpassword.dart';
 import 'package:abc_app/models/user_model.dart';
 import 'package:abc_app/screens/patient/add_address_page.dart';
 import 'package:abc_app/screens/patient/my_orders_page.dart';
@@ -103,7 +104,7 @@ class ProfilePage extends StatelessWidget {
                         icon: Icons.lock_outline,
                         title: 'Change Password',
                         onTap: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => const PlaceholderPage(title: 'Change Password')));
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => const Forgetpassword()));
                         },
                       ),
                     ],
