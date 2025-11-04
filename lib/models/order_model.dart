@@ -1,19 +1,20 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:abc_app/models/cart_model.dart';
 import 'package:abc_app/models/address_model.dart';
+
+import 'cart_item_model.dart';
 
 class OrderModel {
   final String? id;
   final String userId;
   final String pharmacyId;
-  final String pharmacyName; // Store this for easy access
+  final String pharmacyName;
   final List<CartItemModel> items;
   final AddressModel shippingAddress;
   final double subtotal;
   final double shipping;
   final double total;
   final String paymentMethod;
-  final String status; // e.g., "Pending", "Shipped", "Delivered", "Cancelled"
+  final String status;
   final Timestamp createdAt;
   final String? cancellationReason;
 
@@ -51,17 +52,23 @@ class OrderModel {
     };
   }
 
-  // From Firestore document
-  factory OrderModel.fromMap(DocumentSnapshot doc) {
-    Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+  /// Create from Firestore DocumentSnapshot
+  factory OrderModel.fromSnapshot(DocumentSnapshot doc) {
+    final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+    return OrderModel.fromMapData(data, doc.id);
+  }
+
+  /// Create from raw Map + document id
+  factory OrderModel.fromMapData(Map<String, dynamic> data, String id) {
     return OrderModel(
-      id: doc.id,
+      id: id,
       userId: data['userId'] ?? '',
       pharmacyId: data['pharmacyId'] ?? '',
       pharmacyName: data['pharmacyName'] ?? '',
-      items: (data['items'] as List<dynamic>)
+      items: (data['items'] as List<dynamic>? ?? [])
           .map((itemData) => CartItemModel.fromMap(itemData))
           .toList(),
+      // FIXED: Use AddressModel.fromMap for Map data
       shippingAddress: AddressModel.fromMap(data['shippingAddress']),
       subtotal: (data['subtotal'] as num?)?.toDouble() ?? 0.0,
       shipping: (data['shipping'] as num?)?.toDouble() ?? 0.0,
