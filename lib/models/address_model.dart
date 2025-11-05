@@ -10,6 +10,7 @@ class AddressModel {
   final String postalCode;
   final String country;
   final bool isDefault;
+  final String userId; // Add this field
 
   AddressModel({
     this.id,
@@ -21,6 +22,7 @@ class AddressModel {
     required this.postalCode,
     required this.country,
     this.isDefault = false,
+    required this.userId, // Add this
   });
 
   // From Firestore DocumentSnapshot (for addresses collection)
@@ -36,6 +38,7 @@ class AddressModel {
       postalCode: data['postalCode'] ?? '',
       country: data['country'] ?? '',
       isDefault: data['isDefault'] ?? false,
+      userId: data['userId'] ?? '', // Add this
     );
   }
 
@@ -51,6 +54,7 @@ class AddressModel {
       postalCode: data['postalCode'] ?? '',
       country: data['country'] ?? '',
       isDefault: data['isDefault'] ?? false,
+      userId: data['userId'] ?? '', // Add this
     );
   }
 
@@ -65,6 +69,24 @@ class AddressModel {
       'postalCode': postalCode,
       'country': country,
       'isDefault': isDefault,
+      'userId': userId, // Add this
+      // Note: We don't include 'id' here as it's the document ID
+    };
+  }
+
+  // For embedding in orders - include the ID
+  Map<String, dynamic> toOrderMap() {
+    return {
+      'id': id ?? '', // Include ID when embedding in orders
+      'title': title,
+      'addressLine1': addressLine1,
+      'addressLine2': addressLine2,
+      'city': city,
+      'stateRegion': stateRegion,
+      'postalCode': postalCode,
+      'country': country,
+      'isDefault': isDefault,
+      'userId': userId,
     };
   }
 }
